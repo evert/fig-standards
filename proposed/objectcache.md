@@ -24,13 +24,14 @@ To fix this, this document proposes a very simple standard interface.
 
     namespace PSR\Cache;
 
-    interface Base {
+    interface Cache {
 
         /**
          * Stores a new value in the cache.
          *
          * The key must be provided as a string, the value may be any
          * serializable PHP value.
+         * The value stored must not be null.
          *
          * Use the $ttl argument to specify how long the cache is valid for.
          * The time-to-live is specified in seconds.
@@ -50,7 +51,7 @@ To fix this, this document proposes a very simple standard interface.
          * If the object did not exist, this method must return null.
          *
          * @param string $key
-         * @return mixed
+         * @return mixed|null
          */
         function get($key);
 
@@ -63,16 +64,6 @@ To fix this, this document proposes a very simple standard interface.
          * @return void
          */
         function delete($key);
-
-
-        /**
-         * Check if the key exists in the cache.
-         *
-         * @param string $key
-         * @return boolean
-         */
-        function exists($key);
-
     }
 
 ## Bulk operations
@@ -84,12 +75,12 @@ For these cases the Multiple interface may be implemented.
 
     namespace PSR\Cache;
 
-    interface Multiple extends Base {
+    interface MultipleCache extends Cache {
 
         /**
          * Stores multiple items in the cache at once.
          *
-         * The items must be provided as an associative array.
+         * The items must be provided as an associative non-empty array.
          *
          * @param array $items
          * @param int $ttl
@@ -119,17 +110,6 @@ For these cases the Multiple interface may be implemented.
          */
         function deleteMultiple($keys);
 
-        /**
-         * Check for multiple items if they appear in the cache.
-         *
-         * All items must be returned as an array. And each must array value
-         * must either be set to true, or false.
-         *
-         * @param array $keys
-         * @return array
-         */
-        function existsMultiple($keys);
-
     }
 
 If the backend does not natively implement bulk operations, it can still
@@ -142,7 +122,7 @@ of the specification.
         /**
          * Stores multiple items in the cache at once.
          *
-         * The items must be provided as an associative array.
+         * The items must be provided as an associative non-empty array.
          *
          * @param array $items
          * @param int $ttl
