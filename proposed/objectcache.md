@@ -31,7 +31,7 @@ To fix this, this document proposes a very simple standard interface.
          *
          * The key must be provided as a string, the value may be any
          * serializable PHP value.
-         * The value stored must not be null.
+         * If the value is null, the cached entry is removed.
          *
          * Use the $ttl argument to specify how long the cache is valid for.
          * The time-to-live is specified in seconds.
